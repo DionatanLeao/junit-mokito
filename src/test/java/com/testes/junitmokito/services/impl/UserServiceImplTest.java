@@ -18,10 +18,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.testes.junitmokito.domain.User;
 import com.testes.junitmokito.dto.UserDTO;
 import com.testes.junitmokito.repositories.UserRepository;
+import com.testes.junitmokito.services.exception.ObjectNotFoundException;
 
 @SpringBootTest
 public class UserServiceImplTest {
 
+	private static final String OBJETO_NAO_ENCONTRADO = "Objeto não encontrado";
 	private static final Integer ID = 1;
 	private static final String NAME = "Mokito 1";
 	private static final String EMAIL = "mokito1@email.com";
@@ -61,6 +63,19 @@ public class UserServiceImplTest {
 		assertEquals(EMAIL, response.getEmail());
 	}
 
+	@Test
+	void findByIdObjectNotFoundException() {
+		when(repository.findById(Mockito.anyInt())).thenThrow(new ObjectNotFoundException(OBJETO_NAO_ENCONTRADO));
+		
+		try {
+			service.findById(ID);
+		} catch (Exception e) {
+			assertEquals(ObjectNotFoundException.class, e.getClass());
+			assertEquals(OBJETO_NAO_ENCONTRADO, e.getMessage());
+		}
+
+	}
+	
 	@Test
 	void findAll() {
 		
