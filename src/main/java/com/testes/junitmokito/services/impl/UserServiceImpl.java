@@ -11,6 +11,7 @@ import com.testes.junitmokito.domain.User;
 import com.testes.junitmokito.dto.UserDTO;
 import com.testes.junitmokito.repositories.UserRepository;
 import com.testes.junitmokito.services.UserService;
+import com.testes.junitmokito.services.exception.DataIntegratyViolationException;
 import com.testes.junitmokito.services.exception.ObjectNotFoundException;
 
 @Service
@@ -35,7 +36,15 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User create(UserDTO obj) {
+		findByEmail(obj);
 		return repository.save(mapper.map(obj, User.class));
+	}
+	
+	private void findByEmail(UserDTO obj) {
+		Optional<User> user = repository.findByEmail(obj.getEmail());
+		if(user.isPresent()) {
+			throw new DataIntegratyViolationException("E-mail já cadastrado no sistema");
+		}
 	}
 
 }
