@@ -25,6 +25,7 @@ import com.testes.junitmokito.services.exceptions.ObjectNotFoundException;
 @SpringBootTest
 public class UserServiceImplTest {
 
+	private static final String E_MAIL_JA_CADASTRADO_NO_SISTEMA = "E-mail já cadastrado no sistema";
 	private static final int INDEX = 0;
 	private static final String OBJETO_NAO_ENCONTRADO = "Objeto não encontrado";
 	private static final Integer ID = 1;
@@ -44,13 +45,19 @@ public class UserServiceImplTest {
 	private User user;
 	
 	private UserDTO userDTO;
-	
+
 	private Optional<User> optionalUser;
 
 	@BeforeEach
 	void setUp() {
 		MockitoAnnotations.openMocks(this);
 		startUser();
+	}
+	
+	private void startUser() {
+		user = new User(ID, NAME, EMAIL, PASSWORD); 
+		userDTO = new UserDTO(ID, NAME, EMAIL, PASSWORD); 
+		optionalUser = Optional.of(new User(ID, NAME, EMAIL, PASSWORD));
 	}
 	
 	@Test
@@ -86,7 +93,7 @@ public class UserServiceImplTest {
 		List<User> response = service.findAll();
 		
 		 assertNotNull(response);
-		 assertEquals(1, response.size());
+		 assertEquals(ID, response.size());
 		 assertEquals(User.class, response.get(INDEX).getClass());
 		 
 		 assertEquals(ID, response.get(INDEX).getId());
@@ -110,6 +117,7 @@ public class UserServiceImplTest {
 		
 	}
 	
+	
 	@Test
 	void createDataIntegrityViolationException() {
 		when(repository.findByEmail(Mockito.anyString())).thenReturn(optionalUser);
@@ -119,7 +127,7 @@ public class UserServiceImplTest {
 			service.create(userDTO);
 		} catch (Exception e) {
 			assertEquals(DataIntegratyViolationException.class, e.getClass());
-			assertEquals("E-mail já cadastrado no sistema", e.getMessage());
+			assertEquals(E_MAIL_JA_CADASTRADO_NO_SISTEMA, e.getMessage());
 			
 		}
 		
@@ -127,6 +135,33 @@ public class UserServiceImplTest {
 	
 	@Test
 	void update() {
+		when(repository.findById(Mockito.anyInt())).thenReturn(optionalUser);
+		when(repository.save(Mockito.any())).thenReturn(user);
+		
+		User response = service.update(userDTO);
+		
+		assertNotNull(response);
+		assertEquals(User.class, response.getClass());
+		assertEquals(ID, response.getId());
+		assertEquals(NAME, response.getName());
+		assertEquals(EMAIL, response.getEmail());
+		assertEquals(PASSWORD, response.getPassword());
+		
+	}
+
+	@Test
+	void updateDataIntegrityViolationException() {
+		when(repository.findById(Mockito.anyInt())).thenReturn(optionalUser);
+		when(repository.findByEmail(Mockito.anyString())).thenReturn(optionalUser);
+		
+		try {
+			optionalUser.get().setId(2);
+			service.update(userDTO);
+		} catch (Exception e) {
+			assertEquals(DataIntegratyViolationException.class, e.getClass());
+			assertEquals(E_MAIL_JA_CADASTRADO_NO_SISTEMA, e.getMessage());
+			
+		}
 		
 	}
 	
@@ -135,9 +170,4 @@ public class UserServiceImplTest {
 		
 	}
 	
-	private void startUser() {
-		user = new User(ID, NAME, EMAIL, PASSWORD); 
-		userDTO = new UserDTO(1, NAME, EMAIL, PASSWORD); 
-		optionalUser = Optional.of(new User(1, NAME, EMAIL, PASSWORD));
-	}
 }
