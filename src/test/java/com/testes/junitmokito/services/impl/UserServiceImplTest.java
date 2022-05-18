@@ -2,6 +2,9 @@ package com.testes.junitmokito.services.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -167,7 +170,25 @@ public class UserServiceImplTest {
 	
 	@Test
 	void delete() {
+		when(repository.findById(Mockito.anyInt())).thenReturn(optionalUser);
+		doNothing().when(repository).deleteById(Mockito.anyInt());
+		
+		service.delete(ID);
+		
+		verify(repository, times(1)).deleteById(Mockito.anyInt());
 		
 	}
 	
+	@Test
+	void deleteObjectNotFoundException() {
+		when(repository.findById(Mockito.anyInt())).thenThrow(new ObjectNotFoundException(OBJETO_NAO_ENCONTRADO));
+		
+		try {
+			service.delete(ID);
+		} catch (Exception e) {
+			assertEquals(ObjectNotFoundException.class, e.getClass());
+			assertEquals(OBJETO_NAO_ENCONTRADO, e.getMessage());
+		}
+		
+	}
 }
