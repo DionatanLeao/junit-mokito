@@ -19,7 +19,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.testes.junitmokito.domain.User;
 import com.testes.junitmokito.dto.UserDTO;
 import com.testes.junitmokito.repositories.UserRepository;
-import com.testes.junitmokito.services.exception.ObjectNotFoundException;
+import com.testes.junitmokito.services.exceptions.DataIntegratyViolationException;
+import com.testes.junitmokito.services.exceptions.ObjectNotFoundException;
 
 @SpringBootTest
 public class UserServiceImplTest {
@@ -96,6 +97,31 @@ public class UserServiceImplTest {
 	
 	@Test
 	void create() {
+		when(repository.save(Mockito.any())).thenReturn(user);
+		
+		User response = service.create(userDTO);
+		
+		assertNotNull(response);
+		assertEquals(User.class, response.getClass());
+		assertEquals(ID, response.getId());
+		assertEquals(NAME, response.getName());
+		assertEquals(EMAIL, response.getEmail());
+		assertEquals(PASSWORD, response.getPassword());
+		
+	}
+	
+	@Test
+	void createDataIntegrityViolationException() {
+		when(repository.findByEmail(Mockito.anyString())).thenReturn(optionalUser);
+		
+		try {
+			optionalUser.get().setId(2);
+			service.create(userDTO);
+		} catch (Exception e) {
+			assertEquals(DataIntegratyViolationException.class, e.getClass());
+			assertEquals("E-mail já cadastrado no sistema", e.getMessage());
+			
+		}
 		
 	}
 	

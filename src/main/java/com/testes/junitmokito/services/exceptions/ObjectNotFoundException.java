@@ -1,4 +1,4 @@
-package com.testes.junitmokito.services.exception;
+package com.testes.junitmokito.services.exceptions;
 
 public class ObjectNotFoundException extends RuntimeException {
 	private static final long serialVersionUID = 1L;

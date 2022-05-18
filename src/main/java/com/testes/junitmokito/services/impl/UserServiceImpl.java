@@ -11,8 +11,8 @@ import com.testes.junitmokito.domain.User;
 import com.testes.junitmokito.dto.UserDTO;
 import com.testes.junitmokito.repositories.UserRepository;
 import com.testes.junitmokito.services.UserService;
-import com.testes.junitmokito.services.exception.DataIntegratyViolationException;
-import com.testes.junitmokito.services.exception.ObjectNotFoundException;
+import com.testes.junitmokito.services.exceptions.DataIntegratyViolationException;
+import com.testes.junitmokito.services.exceptions.ObjectNotFoundException;
 
 @Service
 public class UserServiceImpl implements UserService {
