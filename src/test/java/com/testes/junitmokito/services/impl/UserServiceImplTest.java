@@ -28,7 +28,7 @@ import com.testes.junitmokito.services.exceptions.ObjectNotFoundException;
 @SpringBootTest
 public class UserServiceImplTest {
 
-	private static final int INDEX = 0;
+	private static final Integer INDEX = 0;
 	private static final Integer ID = 1;
 	private static final String NAME = "Mokito 1";
 	private static final String EMAIL = "mokito1@email.com";
