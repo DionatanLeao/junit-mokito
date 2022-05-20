@@ -2,6 +2,9 @@ package com.testes.junitmokito.resources;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -125,7 +128,15 @@ class UserResourceTest {
 
 	@Test
 	void delete() {
-
+		doNothing().when(service).delete(Mockito.anyInt());
+		
+		ResponseEntity<UserDTO> response = resource.delete(ID);
+		
+		assertNotNull(response);
+		assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+		assertEquals(ResponseEntity.class, response.getClass());
+		
+		verify(service, times(1)).delete(Mockito.anyInt());
 	}
 
 
