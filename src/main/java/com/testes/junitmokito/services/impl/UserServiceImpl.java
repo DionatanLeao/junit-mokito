@@ -11,7 +11,7 @@ import com.testes.junitmokito.domain.User;
 import com.testes.junitmokito.dto.UserDTO;
 import com.testes.junitmokito.repositories.UserRepository;
 import com.testes.junitmokito.services.UserService;
-import com.testes.junitmokito.services.exceptions.DataIntegratyViolationException;
+import com.testes.junitmokito.services.exceptions.DataIntegrityViolationException;
 import com.testes.junitmokito.services.exceptions.ObjectNotFoundException;
 
 @Service
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
 	private void findByEmail(UserDTO obj) {
 		Optional<User> user = repository.findByEmail(obj.getEmail());
 		if(user.isPresent() && !user.get().getId().equals(obj.getId())) {
-			throw new DataIntegratyViolationException("E-mail já cadastrado no sistema");
+			throw new DataIntegrityViolationException("E-mail já cadastrado no sistema");
 		}
 	}
 

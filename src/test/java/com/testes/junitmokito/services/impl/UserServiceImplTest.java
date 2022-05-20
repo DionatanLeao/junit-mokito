@@ -22,7 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.testes.junitmokito.domain.User;
 import com.testes.junitmokito.dto.UserDTO;
 import com.testes.junitmokito.repositories.UserRepository;
-import com.testes.junitmokito.services.exceptions.DataIntegratyViolationException;
+import com.testes.junitmokito.services.exceptions.DataIntegrityViolationException;
 import com.testes.junitmokito.services.exceptions.ObjectNotFoundException;
 
 @SpringBootTest
@@ -130,7 +130,7 @@ public class UserServiceImplTest {
 			optionalUser.get().setId(2);
 			service.create(userDTO);
 		} catch (Exception e) {
-			assertEquals(DataIntegratyViolationException.class, e.getClass());
+			assertEquals(DataIntegrityViolationException.class, e.getClass());
 			assertEquals(E_MAIL_JA_CADASTRADO_NO_SISTEMA, e.getMessage());
 			
 		}
@@ -162,7 +162,7 @@ public class UserServiceImplTest {
 			optionalUser.get().setId(2);
 			service.update(userDTO);
 		} catch (Exception e) {
-			assertEquals(DataIntegratyViolationException.class, e.getClass());
+			assertEquals(DataIntegrityViolationException.class, e.getClass());
 			assertEquals(E_MAIL_JA_CADASTRADO_NO_SISTEMA, e.getMessage());
 			
 		}
